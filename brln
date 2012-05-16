@@ -1,0 +1,24 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+use File::Spec;
+use File::Copy;
+
+for my $file (@ARGV) {
+    unless (-l $file) {
+        warn "Skipping '$file'. Not a symbolic link.\n";
+        next;
+    }
+
+    unless (-f readlink $file) {
+        warn "Skipping '$file'. Not a link to a regular file.\n";
+        next;
+    }
+
+    my $target = File::Spec->rel2abs( $file );
+    my $source = readlink $file;
+
+    unlink $target or die "STOPPED: Couldn't remove symlink for '$file'.\n";
+    copy($source, $target) or die "STOPPED: Copying '$file' failed.\n";
+}
