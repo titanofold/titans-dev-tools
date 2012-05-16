@@ -1,0 +1,30 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+use File::Spec;
+use File::Find::Rule;
+
+if (@ARGV > 1) {
+    die "I can only work on one directory at a time.\n"
+} elsif ( @ARGV == 0) {
+    die "What directory do you want me to work on?\n";
+}
+
+my $path = $ARGV[0];
+die "'$path' is not a directory.\n" unless ( -d $path );
+
+$path     = File::Spec->rel2abs( $path );
+my @paths = File::Find::Rule->directory->in( $path );
+my @files = File::Find::Rule->file->in( $path );
+
+my $original = $path . ".orig";
+rename $path, $original;
+
+mkdir for @paths;
+
+for my $target ( @files ) {
+    my $source = $target;
+    $source =~ s|$path|$original|;
+    symlink $source, $target;
+}
