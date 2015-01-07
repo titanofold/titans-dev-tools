@@ -12,7 +12,7 @@ if (@ARGV > 1) {
 }
 
 my $path = shift;
-die "'$path' is not a directory.\n" unless ( -d $path );
+die "'$path' is not a directory.\n" unless -d $path;
 
 $path     = File::Spec->rel2abs( $path );
 my @paths = File::Find::Rule->directory->in( $path );
