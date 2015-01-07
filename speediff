@@ -11,7 +11,7 @@ if (@ARGV > 1) {
     die "What directory do you want me to work on?\n";
 }
 
-my $path = $ARGV[0];
+my $path = shift;
 die "'$path' is not a directory.\n" unless ( -d $path );
 
 $path     = File::Spec->rel2abs( $path );
